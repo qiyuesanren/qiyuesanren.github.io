@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>安柒</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#9C27B0">
+    
+    
+    <meta name="keywords" content>
+    <meta property="og:type" content="website">
+<meta property="og:title" content="安柒">
+<meta property="og:url" content="https://qiyuesanren.github.io/index.html">
+<meta property="og:site_name" content="安柒">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="安柒">
+    
+        <link rel="alternate" type="application/atom+xml" title="安柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">安柒</h5>
+          <a href="mailto:1823458075@qq.com" title="1823458075@qq.com" class="mail">1823458075@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect active">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">安柒</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">安柒</h1>
+        <h5 class="subtitle">
+            
+                
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-路由策略"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-27 16:54:57" datetime="2020-11-28T00:54:57.000Z"  itemprop="datePublished">2020-11-27</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/27/路由策略/">路由策略</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        路由策略路由器的规制
+
+基于目的的，尽力而为的转发
+对数据3层报头(网络层)中的目的IP，与自己的路由表做匹配
+
+实验环境为：eNSP
+ACL(访问控制列表)功能：通过对3层，4层报头的指定字段进行匹配，实现数据包的管控
+IP数据包五元组：
+
+源IP地址
+目的IP地址
+协议号
+源端口号
+目的端口号
+
+方式：如果数据匹配直接deny(干掉)，不匹配的话，正常通过。
+类型：
+
+基础ACL：只匹配...
+    
+
+        <a href="/2020/11/27/路由策略/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/路由策略/">路由策略</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Clion运行多个Main 函数"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-26 15:34:00" datetime="2020-11-26T23:34:00.000Z"  itemprop="datePublished">2020-11-26</time>
+
+        
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/26/Clion运行多个Main 函数/">Clion运行多个Main函数</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        Clion运行多个main 函数在Clion中每写完一个题目都得重新配置一边
+
+
+太难了，于是我找方法找到了一个完美的解决方法
+在CMakeLists.txt中修改
+1234567891011121314cmake_minimum_required(VERSION 3.17)project(PAT) set(CMAKE_CXX_STANDARD 14)# 上面呢不用修改，修改的在下面file...
+    
+
+        <a href="/2020/11/26/Clion运行多个Main 函数/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Clion/">Clion</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-OSPF实验搭建"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-21 15:34:00" datetime="2020-11-21T23:34:00.000Z"  itemprop="datePublished">2020-11-21</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/21/OSPF实验搭建/">OSPF实验搭建</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        OSPF实验搭建
+
+RIP和末梢网络不在一起
+配置IP(IP,环回地址)配置IP以R1为例子1234[R1]interface GigabitEthernet 0/0/0[R1-GigabitEthernet0/0/0]ip add	[R1-GigabitEthernet0/0/0]ip address 192.168.1.2 24[R1-GigabitEthernet0/0/0]q
+
+配置...
+    
+
+        <a href="/2020/11/21/OSPF实验搭建/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/">OSPF</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-OSPF"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-18 11:00:57" datetime="2020-11-18T19:00:57.000Z"  itemprop="datePublished">2020-11-18</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/18/OSPF/">OSPF</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        OSPF基础介绍：
+
+IETF针对中大型网络开发设计的一个动态路由选择协议
+开放式最短路线优先
+V1 –&gt;(实验室版本)
+V2 –&gt;(IPV4)
+V3 –&gt;(IPV6)
+
+特点：
+
+算法：SPF  –&gt;（Dijkstra）算法
+
+更新：
+
+LSA链路状态通告(摘要更新)  构建网络大体结构
+LSA 30分钟 洪范一次  更新采用触发更新
+
+区域：
+
+区域(自行规划，每...
+    
+
+        <a href="/2020/11/18/OSPF/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/">OSPF</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-RIP搭建"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-15 22:54:57" datetime="2020-11-16T06:54:57.000Z"  itemprop="datePublished">2020-11-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/15/RIP搭建/">RIP实验搭建</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        RIP实验环境：ENSP
+
+
+配置IP(IP,网关)配置PC(以PC1为例子)机器的IP地址= 网段为192.168.1.0+机器编号为1=192.168.1.1
+网关=网段192.168.1.0+254=192.168.1.254
+
+
+配置路由器(以AR1为例)12345678910&lt;Huawei&gt;system-view  //切换系统视图[Huawei]interface G...
+    
+
+        <a href="/2020/11/15/RIP搭建/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RIP/">RIP</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-动态路由协议的原理+RIP"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-13 09:54:57" datetime="2020-11-13T17:54:57.000Z"  itemprop="datePublished">2020-11-13</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/13/动态路由协议的原理+RIP/">动态路由协议的原理+RIP</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        动态路由协议的原理+RIP路由协议网络层
+路由：指导数据包转发的路径
+路由表的构建(获得)方式
+
+直连路由：路由器直接连接的网络的路由
+静态路由：网络管理员通过人工设置构建(配置)的路由
+优点：安全，没有设备计算设备占用
+缺点：需要管理员熟悉网络结构，针对于大型网络—-&gt;配置复杂，工作量大，不灵活,发生变动需要调整
+
+
+动态路由：路由器通过运行动态路由选择协议学习到的路由
+范围划分
+I...
+    
+
+        <a href="/2020/11/13/动态路由协议的原理+RIP/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RIP/">RIP</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-计算机网络基础"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-05 12:22:47" datetime="2020-11-05T20:22:47.000Z"  itemprop="datePublished">2020-11-05</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/05/计算机网络基础/">计算机网络基础</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        话不多说，直接上图
+
+
+12345678910111213141516171819202122应用层    --&gt;人机交互接口			--&gt; 你好，在嘛表示层    --&gt;编码解码，数据压缩		--&gt; 010101会话层    --&gt;区分进程			--&gt; QQ的数据传输层    --&gt;端到端的传输			--&gt; 传输层+QQ的数据网络层    --...
+    
+
+        <a href="/2020/11/05/计算机网络基础/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络基础/">网络基础</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-Hello"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2020-11-04 00:51:45" datetime="2020-11-04T08:51:45.000Z"  itemprop="datePublished">2020-11-04</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/分类/">分类</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2020/11/04/Hello/">Hello</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试
+
+    
+
+        <a href="/2020/11/04/Hello/" class="post-more waves-effect waves-button">
+            Continue reading...
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/标签/">标签</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>安柒 &copy; 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn/" target="_blank">陕ICP备19022751号-3</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/&title=安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/&title=安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=安柒&url=https://qiyuesanren.github.io/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB0ElEQVR42u3awQrDIBCE4bz/S6fXQlFnZl2x8HsKIdjPHsSd9Xnk8X6N3zej9/qbzQMuXLhl7jsd39+MnrOfn88znBMuXLgHufp08w1OWd78eWGDCxfuldw5rnIwggsX7j9y3c3LXQZcuHBv4yrFj14aKaD2Wg0uXLgFbhZh7H1uyXfhwoUbcd9o6IcYtxBa/C5cuHCPcN1NRy9mlBncNi1cuHDPcJVioxKb7opWH6UCgwsX7iaui1YCC+OwIhRaRgkEFy7cNm62DL1B4hY/wxMZXLhw27h6qaM3RN0rGkosa3d94cKFW+Aq4eauBokbvy6KH7hw4TZz3ejT3nqi76UWLFy4cJu52SZVb7K2nM7gwoVb4IZdWbkF6169kv5RuHDhHue6hVBHA2a4YLhw4R7hZseR7IpGnQ4XLtwzXD3o7GjAKGipyQoXLtytXH0bcrkuzjgYwYULt5n7miO7ZpGVVcY64MKFu5XrRpluqFpp0JbQcOHCLXPdzWtX8zW84gkXLtyD3GyjUYqlSvGziEXgwoV7ATcLUNygZHGxAy5cuJdx3WsT+oLDVitcuHCbuVlI6oaeehtmccSBCxduM1cPTI0SxQxhW/JduHDhJtwPYeAGHJ9VnLMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '安柒！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

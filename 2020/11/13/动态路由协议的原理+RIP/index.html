@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>动态路由协议的原理+RIP | 安柒</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#9C27B0">
+    
+    
+    <meta name="keywords" content="RIP">
+    <meta name="description" content="动态路由协议的原理+RIP路由协议网络层 路由：指导数据包转发的路径 路由表的构建(获得)方式  直连路由：路由器直接连接的网络的路由 静态路由：网络管理员通过人工设置构建(配置)的路由 优点：安全，没有设备计算设备占用 缺点：需要管理员熟悉网络结构，针对于大型网络—-&amp;gt;配置复杂，工作量大，不灵活,发生变动需要调整   动态路由：路由器通过运行动态路由选择协议学习到的路由 范围划分 IGP">
+<meta name="keywords" content="RIP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态路由协议的原理+RIP">
+<meta property="og:url" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/index.html">
+<meta property="og:site_name" content="安柒">
+<meta property="og:description" content="动态路由协议的原理+RIP路由协议网络层 路由：指导数据包转发的路径 路由表的构建(获得)方式  直连路由：路由器直接连接的网络的路由 静态路由：网络管理员通过人工设置构建(配置)的路由 优点：安全，没有设备计算设备占用 缺点：需要管理员熟悉网络结构，针对于大型网络—-&amp;gt;配置复杂，工作量大，不灵活,发生变动需要调整   动态路由：路由器通过运行动态路由选择协议学习到的路由 范围划分 IGP">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图1.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图2.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图3.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图4.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图2.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图6.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图7.png">
+<meta property="og:updated_time" content="2020-11-18T09:29:54.491Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动态路由协议的原理+RIP">
+<meta name="twitter:description" content="动态路由协议的原理+RIP路由协议网络层 路由：指导数据包转发的路径 路由表的构建(获得)方式  直连路由：路由器直接连接的网络的路由 静态路由：网络管理员通过人工设置构建(配置)的路由 优点：安全，没有设备计算设备占用 缺点：需要管理员熟悉网络结构，针对于大型网络—-&amp;gt;配置复杂，工作量大，不灵活,发生变动需要调整   动态路由：路由器通过运行动态路由选择协议学习到的路由 范围划分 IGP">
+<meta name="twitter:image" content="https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/图1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="安柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">安柒</h5>
+          <a href="mailto:1823458075@qq.com" title="1823458075@qq.com" class="mail">1823458075@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">动态路由协议的原理+RIP</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">动态路由协议的原理+RIP</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-11-13T17:54:57.000Z" itemprop="datePublished" class="page-time">
+  2020-11-13
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#动态路由协议的原理-RIP"><span class="post-toc-number">1.</span> <span class="post-toc-text">动态路由协议的原理+RIP</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#路由协议"><span class="post-toc-number"></span> <span class="post-toc-text">路由协议</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#动态路由原理"><span class="post-toc-number"></span> <span class="post-toc-text">动态路由原理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#RIP协议-中小型网络"><span class="post-toc-number"></span> <span class="post-toc-text">RIP协议(中小型网络)</span></a>
+        </nav>
+    </aside>
+
+
+<article id="post-动态路由协议的原理+RIP"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">动态路由协议的原理+RIP</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-11-13 09:54:57" datetime="2020-11-13T17:54:57.000Z"  itemprop="datePublished">2020-11-13</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="动态路由协议的原理-RIP"><a href="#动态路由协议的原理-RIP" class="headerlink" title="动态路由协议的原理+RIP"></a>动态路由协议的原理+RIP</h3><h2 id="路由协议"><a href="#路由协议" class="headerlink" title="路由协议"></a>路由协议</h2><p>网络层</p>
+<p><strong>路由</strong>：指导数据包转发的路径</p>
+<p><strong>路由表的构建(获得)方式</strong></p>
+<ul>
+<li>直连路由：路由器直接连接的网络的路由</li>
+<li>静态路由：网络管理员通过人工设置构建(配置)的路由<ul>
+<li>优点：安全，没有设备计算设备占用</li>
+<li>缺点：需要管理员熟悉网络结构，针对于大型网络—-&gt;配置复杂，工作量大，不灵活,发生变动需要调整</li>
+</ul>
+</li>
+<li>动态路由：路由器通过运行<strong>动态路由选择协议</strong>学习到的路由<ul>
+<li>范围划分</li>
+<li>IGP 内部网关协议—-&gt;RIP(距离矢量算法),OSPF(最短路径优先),IS-IS(中间系统到中间系统),EIGRP(思科)</li>
+<li>EGP 外部网关协议—-&gt;BGP(边界网关协议)</li>
+<li>AS：自治系统—-&gt;一个网络受同意组织管理和维护(大公司，运营商)—-&gt;自治系统受到国际性组织认可会<strong>颁发一个全球的唯一自治性编号</strong></li>
+<li><img src="/2020/11/13/动态路由协议的原理+RIP/图1.png" title="This is an example image">
+
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>不同的路由协议</strong>学习到相同的目的网络</p>
+<ul>
+<li><strong>优先级/管理距离</strong>：当不同的路由协议学习到相同的目的网络，通过优先级\管理距离来区分路由的好坏</li>
+<li>华为设备：直连 0 OSPF 10 IS-IS 15 静态60 RIP 100 BGP 255 —-&gt;(数字越低越好)</li>
+<li><strong>度量值(cost)</strong>：<strong>同一种协议</strong>学习到相同的目的网络，通过<strong>度量值</strong>区分路由和的好坏<ul>
+<li>距离矢量：通过目的地址的网络与本地的远近(需要经过多少台路由器)</li>
+<li>链路状态：通过带宽进行计算</li>
+<li>路径：加入人工指定的参数，通过某种规则，比较人工指定的参数，进行选择</li>
+</ul>
+</li>
+</ul>
+<h2 id="动态路由原理"><a href="#动态路由原理" class="headerlink" title="动态路由原理"></a>动态路由原理</h2><img src="/2020/11/13/动态路由协议的原理+RIP/图2.png" title="This is an example image">
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">图中四个网段(横线，1.0 2.0 3.0 4.0)</span><br><span class="line"></span><br><span class="line">第一个路由器知道直连网络1.0和2.0</span><br><span class="line">第二个路由器知道直连网络2.0和3.0</span><br><span class="line">第三个路由器知道直连网络3.0和4.0</span><br></pre></td></tr></table></figure>
+
+<p><strong>直连网络</strong> —-&gt;1.0想去4.0—-&gt;路由器只知道1.0和2.0，就会把数据丢弃掉</p>
+<p><strong>静态路由</strong> —-&gt;1.0想去4.0—-&gt;数据从哪发出去，扔到那，都已经被指定好了</p>
+<p><strong>动态路由</strong> —-&gt;(距离矢量)—-&gt;</p>
+<img src="/2020/11/13/动态路由协议的原理+RIP/图3.png" title="This is an example image">
+
+<p>更新数据包：本地路由信息，用于让其他设备学习 </p>
+<img src="/2020/11/13/动态路由协议的原理+RIP/图4.png" title="This is an example image">
+
+<p>收敛完成：所有路由器通过学习构建整网的网段信息，可以进行数据转发</p>
+<p><strong>动态路由的好坏</strong>：收敛完成的速度</p>
+<p><strong>更新方式</strong></p>
+<ul>
+<li>周期性更新<ul>
+<li>如果，一个路由出问题，陷入<strong>路由环路</strong>(两台路由器都错误的认为对方是自己去往的下一台设备)</li>
+<li><img src="/2020/11/13/动态路由协议的原理+RIP/图2.png" title="This is an example image"></li>
+<li>解决办法<ul>
+<li><strong>水平分割</strong>：从一个接口收到收到的跟新不会再从这个接口发出</li>
+<li><strong>老化</strong>：路由器没学到一条路由器都会进行老化计时，如果时间到达老化时间同时仍没有收到更新那么则认为这条路由出现故障</li>
+<li><strong>毒性逆转</strong>：从一个接口收到的路由仍会从该接口发回，但是发回时，度量值会标记为无穷大(及不可达)</li>
+<li><strong>最大条数限制</strong>：会限制更新数据包的转发次数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>触发更新 ：收敛完成之后，只有那个网络出现问题，才会针对出现问题的网络，然后通知别人，不要相信他</li>
+</ul>
+<h2 id="RIP协议-中小型网络"><a href="#RIP协议-中小型网络" class="headerlink" title="RIP协议(中小型网络)"></a>RIP协议(中小型网络)</h2><p><strong>度量值(cost)：</strong>距离矢量  根据<strong>更新包</strong>( 封装在UDP使用端口520)的<strong>跳数</strong>(最大跳数15 ，16即是不可达)</p>
+<p><strong>版本</strong></p>
+<ul>
+<li>V1  有类网络<ul>
+<li>更新发送的地址 255.255.255.255 (<strong>广播</strong>地址 )更新路由表–&gt;不安全 </li>
+</ul>
+</li>
+<li>V2  无类网络<ul>
+<li>更新发送的地址 224.0.0.09 (<strong>组播</strong>地址) 更新路由表 更新</li>
+<li>路由认证  </li>
+<li><img src="/2020/11/13/动态路由协议的原理+RIP/图6.png" title="This is an example image">
+<ul>
+<li>明文认证</li>
+<li>密文认证</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NG  IPV6   </li>
+</ul>
+<p><strong>静默接口</strong> —- &gt; 如果一个接口被配置为静默接口那麽该接口只接受更新，不会主动发送更新</p>
+<p>*<em>单播更新 *</em>—- &gt;指定具体IP地址，更新包只会发向该IP</p>
+<img src="/2020/11/13/动态路由协议的原理+RIP/图7.png" title="This is an example image">
+
+<p><strong>更新方式</strong>：周期性+触发 </p>
+<ul>
+<li><p>周期性:30S  </p>
+</li>
+<li><p>老化时间：180S</p>
+</li>
+<li><p>垃圾时间：120S </p>
+</li>
+<li><p>每30秒，把自己知道的网络告诉别人一次，如果这个过程中某个网络断掉了，不会等到下一个30S，而是直接告诉别人，那个网络出现了故障，开启老化时间180S，如果这个设备确实出现了问题(180S到了以后)，进行垃圾处理时间(120S)</p>
+</li>
+<li><p>180S+120S =5MIN才能删除</p>
+</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2020-11-18T09:29:54.491Z" itemprop="dateUpdated">2020-11-18 01:29:54</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2020/11/13/动态路由协议的原理+RIP/" target="_blank" rel="external">https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://qiyuesanren.github.io">
+            <img src="/img/avatar.jpg" alt="安柒">
+            安柒
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RIP/">RIP</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&title=《动态路由协议的原理+RIP》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&title=《动态路由协议的原理+RIP》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《动态路由协议的原理+RIP》 — 安柒&url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2020/11/15/RIP搭建/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RIP实验搭建</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/11/05/计算机网络基础/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">计算机网络基础</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>安柒 &copy; 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn/" target="_blank">陕ICP备19022751号-3</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&title=《动态路由协议的原理+RIP》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&title=《动态路由协议的原理+RIP》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《动态路由协议的原理+RIP》 — 安柒&url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/13/动态路由协议的原理+RIP/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACr0lEQVR42u3aQW4jMQwEwPz/07vXBRJPukkp8QLlkzF2LNUchkxTHx/x60/w+vzNf698fv/q+88rftx44eHh4R3d+vOmn7f+TJrtLd8zHh4e3m3e87aSB3f+t8labYF5eR0PDw/vDXjt1ltSXhjw8PDw/kde++mpX8bDw8N7B14SRswihrZdnrXdB7IWPDw8vJg3a39/9/2V+R4eHh7eoQMBszi1DWSTZrreLR4eHt4FXtvOtm1rC3tuytt94uHh4f0ML99Qcj0vEkkZyIdneHh4ePd4eQyaF4ZTB14PRLR4eHh4l3n5Y3oD2xSe5KDAFxUPDw8P7yivHcPPCkl7jGATQ9RjMDw8PLyStw8a2luzLyH5YAwPDw/vBq9tZNuF2xNQN46F4eHh4d3g5YOl2WJ5q53f0OGxBjw8PLw17zlOzZf5maMAbRCMh4eHd483ixjyaHV2E4sR16tfxsPDw7vAy7e1ORQ1a6DbFr9o/fHw8PAWvHbItIl38wd6W36OnSnDw8PDK3mbprltf/Pvz4rNF/8x4OHh4R3l5aP92TgqjySSBrooQnh4eHgXeLOmefNwz2/ZrMzg4eHh3eblj/jNp7NwNo8hXq6Fh4eHd4FXD93LsDUJhfN2eTgkw8PDw7vAq3vweCttzLE5ppAEJXh4eHineJslkwJwakiWwIqOGw8PD2/Nawf8bSDbNuuz5h4PDw/vt3jDR/AIs/+db/4KDw8P7yhvc8Qqaa9nce0sTaljCDw8PLwRb1NPkvdtsZmtMhyA4eHh4S14eaAwG/O3N7GNhr9ZCw8PD+8aL1lsFlXsx2CbUAMPDw/vfXiz4VkLbsvAF9fx8PDw3ow3G2jlm94c58LDw8O7zZsdnErCiBy2P+T6sjDg4eHhHeXNAtbZ2D4Hb/aDh4eHd433F6135ClAL5MlAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '安柒！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

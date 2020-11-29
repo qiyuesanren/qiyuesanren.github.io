@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>OSPF | 安柒</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#9C27B0">
+    
+    
+    <meta name="keywords" content="OSPF">
+    <meta name="description" content="OSPF基础介绍：  IETF针对中大型网络开发设计的一个动态路由选择协议 开放式最短路线优先 V1 –&amp;gt;(实验室版本) V2 –&amp;gt;(IPV4) V3 –&amp;gt;(IPV6)  特点：  算法：SPF  –&amp;gt;（Dijkstra）算法  更新：  LSA链路状态通告(摘要更新)  构建网络大体结构 LSA 30分钟 洪范一次  更新采用触发更新  区域：  区域(自行规划，每个区域">
+<meta name="keywords" content="OSPF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSPF">
+<meta property="og:url" content="https://qiyuesanren.github.io/2020/11/18/OSPF/index.html">
+<meta property="og:site_name" content="安柒">
+<meta property="og:description" content="OSPF基础介绍：  IETF针对中大型网络开发设计的一个动态路由选择协议 开放式最短路线优先 V1 –&amp;gt;(实验室版本) V2 –&amp;gt;(IPV4) V3 –&amp;gt;(IPV6)  特点：  算法：SPF  –&amp;gt;（Dijkstra）算法  更新：  LSA链路状态通告(摘要更新)  构建网络大体结构 LSA 30分钟 洪范一次  更新采用触发更新  区域：  区域(自行规划，每个区域">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/1类LSA.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/2类LSA.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/3类LSA.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/4类LSA.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/5类LSA.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/特殊区域.png">
+<meta property="og:updated_time" content="2020-11-18T09:32:59.748Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OSPF">
+<meta name="twitter:description" content="OSPF基础介绍：  IETF针对中大型网络开发设计的一个动态路由选择协议 开放式最短路线优先 V1 –&amp;gt;(实验室版本) V2 –&amp;gt;(IPV4) V3 –&amp;gt;(IPV6)  特点：  算法：SPF  –&amp;gt;（Dijkstra）算法  更新：  LSA链路状态通告(摘要更新)  构建网络大体结构 LSA 30分钟 洪范一次  更新采用触发更新  区域：  区域(自行规划，每个区域">
+<meta name="twitter:image" content="https://qiyuesanren.github.io/2020/11/18/OSPF/1类LSA.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="安柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">安柒</h5>
+          <a href="mailto:1823458075@qq.com" title="1823458075@qq.com" class="mail">1823458075@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">OSPF</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">OSPF</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-11-18T19:00:57.000Z" itemprop="datePublished" class="page-time">
+  2020-11-18
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#OSPF"><span class="post-toc-number">1.</span> <span class="post-toc-text">OSPF</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基础"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">基础</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#OSPF认证"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">OSPF认证</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DR-BDR问题"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">DR/BDR问题</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LSA链路状态通告"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">LSA链路状态通告</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#特殊区域"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">特殊区域</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#虚拟连接"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">虚拟连接</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-OSPF"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">OSPF</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-11-18 11:00:57" datetime="2020-11-18T19:00:57.000Z"  itemprop="datePublished">2020-11-18</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="OSPF"><a href="#OSPF" class="headerlink" title="OSPF"></a>OSPF</h1><h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p><strong>介绍：</strong></p>
+<ul>
+<li>IETF针对中大型网络开发设计的一个动态路由选择协议</li>
+<li>开放式最短路线优先</li>
+<li>V1 –&gt;(实验室版本)</li>
+<li>V2 –&gt;(IPV4)</li>
+<li>V3 –&gt;(IPV6)</li>
+</ul>
+<p><strong>特点：</strong></p>
+<ul>
+<li>算法：SPF  –&gt;（Dijkstra）算法</li>
+</ul>
+<p><strong>更新：</strong></p>
+<ul>
+<li><strong>LSA</strong>链路状态通告(<strong>摘要更新</strong>)  构建网络大体结构</li>
+<li><strong>LSA</strong> 30分钟 洪范一次  更新采用触发更新</li>
+</ul>
+<p><strong>区域：</strong></p>
+<ul>
+<li>区域(自行规划，每个区域的LSA只会在本区域洪范)：核心区域(0.0.0.0不是IP只是一个标识) +非核心区域(X.X.X.X)</li>
+<li>非核心区域必须和核心区域链接</li>
+</ul>
+<p><strong>路由器身份：</strong></p>
+<ul>
+<li>IR (内部路由器)：所有接口网段属于同一区域</li>
+<li>ABR (区域边界路由器)：接口的网段属于不同区域</li>
+<li>ASBR  (自治系统边界路由器)：接口网段属于不同协议</li>
+</ul>
+<p><strong>特点：</strong></p>
+<ul>
+<li>支持VLSM和CIDR(无类别域间路)</li>
+<li>支持路由认证</li>
+<li>组播更新：224.0.0.5 224.0.0.6</li>
+<li>OSPF 有一套自己的可保证性保障机制，使用IP封装，协议编号89</li>
+<li>Route-ID –&gt; 唯一的身份标识 <ul>
+<li>华为设备：第一个配置的有效接口地址作为身份标识</li>
+<li>思科设备：最大的环回接口地址或最大的物理接口地址</li>
+<li>人工的配置</li>
+</ul>
+</li>
+</ul>
+<p><strong>邻居处理：</strong></p>
+<p> <strong>自己有可靠性保障机制 所以报文直接用IP封装</strong></p>
+<ul>
+<li><strong>报文–&gt;邻居状态过度</strong>    <ul>
+<li>Hello 用于建立邻居关系</li>
+<li>DBD 包含了LSA</li>
+<li>LSR：用于查询详细网段路由信息</li>
+<li>LSU：详细网段的路由信息</li>
+<li>LSAck：确认报文</li>
+</ul>
+</li>
+<li><strong>交互步骤(邻居有限状态机)</strong><ul>
+<li>down   设备没有任何动作</li>
+<li>init    设备发送hello 报文</li>
+<li>2-way  发送了Hello 也接受了hello ，并且hello报文中的参数匹配</li>
+<li>exstart   邻居间发送Route-ID比较  决定哪一方先发送DBD  (链路状态构造)</li>
+<li>exchange  发送DBD 并接受DBD构建网络拓扑结构</li>
+<li>loading 查询具体网络信息</li>
+<li>full(完整) 正常转发 </li>
+</ul>
+</li>
+<li><strong>Hello 决定性参数</strong><ul>
+<li>发送Hello 报文接口所属区域ID</li>
+<li>接口所属网段信息</li>
+<li>接口设置Hello 发送间隔和死亡时间(如果双方更改时间不一样，可能会出问题)</li>
+<li>接口是否设置认证</li>
+<li>接口是否属于特殊区域标记</li>
+<li>接口的MTU(最大传输单元)值： 邻居可以正常建立但是无法交互DBD报文<h2 id="OSPF认证"><a href="#OSPF认证" class="headerlink" title="OSPF认证"></a>OSPF认证</h2></li>
+</ul>
+</li>
+</ul>
+<p><strong>加密</strong>：用来保证数据传输的安全，解决私密性</p>
+<p><strong>认证：</strong>1.验证双方身份的合法性，2.数据的完整性(内容没有被串改)</p>
+<p><strong>认证方式：</strong>链路认证+区域认证</p>
+<h2 id="DR-BDR问题"><a href="#DR-BDR问题" class="headerlink" title="DR/BDR问题"></a>DR/BDR问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DR（Designated Router）：指定路由器，OSPF协议启动后开始选举而来</span><br><span class="line"></span><br><span class="line">BDR（Back-up Designated Router）：备份指定路由器，同样是由OSPF启动后选举而来</span><br><span class="line"></span><br><span class="line">DRothers：其他路由器，非DR非BDR的路由器都是DRothers。</span><br><span class="line"></span><br><span class="line">ABR（Area Border Routers：区域边界路由器，连接不同OSPF区域。</span><br><span class="line"></span><br><span class="line">ASBR（Autonomous System Boundary Router）：自治系统边界路由器，位于OSPF和非OSPF网络之间。</span><br><span class="line"></span><br><span class="line">骨干路由器：至少有一个借口连接到骨干区域（区域0）</span><br></pre></td></tr></table></figure>
+
+<p><strong>选举BR和DBR</strong></p>
+<ul>
+<li>所有设备都会申明自己是BDR，当选举结束后，没有DR，当前BDR会成为DR。</li>
+<li>比较接口优先级(0-255 默认为1)，越大表示越优先，如果为0，则不掺假选举。</li>
+<li>比较Router-ID 数字越大，优先级越高。</li>
+</ul>
+<p><strong>注意</strong>：OSPF选举是非抢占性的(只要BR选出来了，如果来了优先级更高的路由器，不会让新来的路由器成为DR)，如果要人工干预OSPF选举(改接口优先级)，需要重启DR，BDR设备的OSPF进程。</p>
+<p><strong>组播地址</strong></p>
+<ul>
+<li>224.0.0.6 (组播地址), DR/BDR使用，确保数据交互，存活状态检查。</li>
+</ul>
+<h2 id="LSA链路状态通告"><a href="#LSA链路状态通告" class="headerlink" title="LSA链路状态通告"></a>LSA链路状态通告</h2><p>包含着DBD报文中</p>
+<p>常用通告，1，2，3，4，5，7类LSA。</p>
+<p><strong>1类LSA</strong>：每台设备都会产生，包含本地链路状态摘要，只在<strong>同区域内扩散。</strong></p>
+<img src="/2020/11/18/OSPF/1类LSA.png" title="This is an example image">
+<p><strong>2类LAS：</strong>DR产生，用于向其他非DR/BDR设备宣告自己位置，只在<strong>同区域内扩散</strong>，通过DR相互中转。</p>
+<img src="/2020/11/18/OSPF/2类LSA.png" title="This is an example image">
+<p><strong>3类LAS：</strong>ABR产生，用户向本区域宣告非本区域网络摘要信息(1类LSA通过ABR变3LSA)。</p>
+<img src="/2020/11/18/OSPF/3类LSA.png" title="This is an example image">
+<p><strong>4类LAS：</strong>ABR产生，用于向本区域宣告ASBR<strong>位置。</strong></p>
+<img src="/2020/11/18/OSPF/4类LSA.png" title="This is an example image">
+<p><strong>5类LAS：</strong>ASBR产生，ASBR用于向OSPF网络宣告外部网络信息，<strong>ASBR把RIP信息变成5类发到OSPF</strong>。</p>
+<img src="/2020/11/18/OSPF/5类LSA.png" title="This is an example image">
+<h2 id="特殊区域"><a href="#特殊区域" class="headerlink" title="特殊区域"></a>特殊区域</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">STUB：末梢区域</span><br><span class="line">完全STUB：Totaly STUB</span><br><span class="line">非完全STUB：NSSA</span><br><span class="line">完全非完全STUB：Totaly NSSA</span><br><span class="line"></span><br><span class="line">所有特殊区域只能够对非核心区域设置</span><br><span class="line"></span><br><span class="line">注意：不是所有STUB都支持完全STUB，但都支持STUB</span><br><span class="line"></span><br><span class="line">通过看是不是外部网络(与外部区域相连)的注入来确定STUB，还是非完全STUB</span><br><span class="line"></span><br><span class="line">如果属于特殊区域，设备建临，对接口发送的HELLO报文进行特殊区域标记，改完特殊区域后，会对重新进行邻居建立</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/11/18/OSPF/特殊区域.png" title="This is an example image">
+<p>A1区域通过4类，5类(麻烦了)去了解RIP，所以把A1区域作为STUB区域。</p>
+<p><strong>STUB(末梢区域):</strong>当一个非核心区域被设置成为STUB区域，那么连接该区域的ABR设备就不会向该区域发送4类(LSA)，5类(LSA)而是发一条缺省3类LSA，但是还是有A0还会向A1发送3类(没用)。</p>
+<p><strong>完全STUB区域(Totaly STUB)</strong>：当一个非核心区域被设置成为完全STUB后，该区域的ABR不会再向该区域发送3、4、5类LSA，而是改发一条缺省3类LSA。</p>
+<p><strong>完全STUB区域的问题</strong>：**如果一个非核心区域是外部网络的注入区域，那么STUB后，4、5类LSA就会被抑制，本区域不会受到影响，但是OSPF其他区域就无法正常学习到外部网络信息。</p>
+<p><strong>非完全STUB</strong>：当一个非核心区域被设置成为非完全STUB后，该区域的4、5类会被抑制，变成一条缺省3类，那么，5类会转变为7类LSA，通过ABR向其他区域发送。</p>
+<p><strong>完全非完全STUB</strong>：当一个非核心区域被设置成为完全非完全STUB后，该区域的3、4、5类会被抑制，变成一条缺省3类，5类会转变为7类LSA，通过ABR向其他区域发送。</p>
+<h2 id="虚拟连接"><a href="#虚拟连接" class="headerlink" title="虚拟连接"></a>虚拟连接</h2><p>因为OSPF要求非核心区域必须和核心区域链接，但是有时因为某些情况会导致非核心无法和核心直连，或者核心区区域不连续，ABR设备就可以通过逻辑虚连接来保证要求 。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2020-11-18T09:32:59.748Z" itemprop="dateUpdated">2020-11-18 01:32:59</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2020/11/18/OSPF/" target="_blank" rel="external">https://qiyuesanren.github.io/2020/11/18/OSPF/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://qiyuesanren.github.io">
+            <img src="/img/avatar.jpg" alt="安柒">
+            安柒
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/">OSPF</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/18/OSPF/&title=《OSPF》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/18/OSPF/&title=《OSPF》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/18/OSPF/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《OSPF》 — 安柒&url=https://qiyuesanren.github.io/2020/11/18/OSPF/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/18/OSPF/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2020/11/21/OSPF实验搭建/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">OSPF实验搭建</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/11/15/RIP搭建/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RIP实验搭建</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>安柒 &copy; 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn/" target="_blank">陕ICP备19022751号-3</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/18/OSPF/&title=《OSPF》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/18/OSPF/&title=《OSPF》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/18/OSPF/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《OSPF》 — 安柒&url=https://qiyuesanren.github.io/2020/11/18/OSPF/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/18/OSPF/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMklEQVR42u3aQW7DMAxE0dz/0i7QVYvU7p9hEsDS18pwEUVPBRiR1OOBx/E9nt/8fM+fz948//XFQ4YMGbdlHJeDLOVsnrON4J8la5MhQ8Y+jOsge70sHjqvv+t6+/6ZR4YMGTJwkO3CJTlWypAhQwYPuGlY5IH7o78bMmTIuCGDh8609kW2jMBelovLkCHjhoy0MfDJ5zf2N2TIkHETxlGNruiWJq7BemTIkLE0Y37s48fH9IIFT2hlyJCxNqNrKHJG15jkyeqv3w0ZMmRswOguScxLaV2Q/eNQKEOGjKUZJBHtDn883R01TWXIkLEZI500DdDoqJceFmXIkLE0g3+YFOkmyW3aBjhtDMiQIWNpRles54Gbz9xtjQwZMtZmcEzaHU0XTVqeqJ0pQ4aMhRhk0SRP5Ac+Pltw1UOGDBlLM9KyWlc+65oEpNmA+hIyZMi4OWPSnkTF+nHqW/4fZMiQsTQjPeTxjSBNgu6qmQwZMtZm8CLapJHJU9nJswwZMvZkcB5vGJDt6JqdMmTI2IFBUkfeGIjL+mH4js+5MmTIWIgxufTAGwn8GkcQuGXIkLE0o8NMwihnk+OjDBky1mYc4eiSXp6g8sRYhgwZ+zD4mAfc+XfNZ5YhQ8Z9GemlijR97ZqaPCjLkCFjH0YX+NJQOwnHZRYuQ4aMLRndVQme+pZnWxkyZMjADcX0IsVo6TJkyNiM0YXLrhiXfpcMGTJkpMX67n1abitTWRkyZKzG+ALzX3+t+k/gHgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '安柒！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>路由策略 | 安柒</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#9C27B0">
+    
+    
+    <meta name="keywords" content="路由策略">
+    <meta name="description" content="路由策略路由器的规制  基于目的的，尽力而为的转发 对数据3层报头(网络层)中的目的IP，与自己的路由表做匹配  实验环境为：eNSP ACL(访问控制列表)功能：通过对3层，4层报头的指定字段进行匹配，实现数据包的管控 IP数据包五元组：  源IP地址 目的IP地址 协议号 源端口号 目的端口号  方式：如果数据匹配直接deny(干掉)，不匹配的话，正常通过。 类型：  基础ACL：只匹配源IP">
+<meta name="keywords" content="路由策略">
+<meta property="og:type" content="article">
+<meta property="og:title" content="路由策略">
+<meta property="og:url" content="https://qiyuesanren.github.io/2020/11/27/路由策略/index.html">
+<meta property="og:site_name" content="安柒">
+<meta property="og:description" content="路由策略路由器的规制  基于目的的，尽力而为的转发 对数据3层报头(网络层)中的目的IP，与自己的路由表做匹配  实验环境为：eNSP ACL(访问控制列表)功能：通过对3层，4层报头的指定字段进行匹配，实现数据包的管控 IP数据包五元组：  源IP地址 目的IP地址 协议号 源端口号 目的端口号  方式：如果数据匹配直接deny(干掉)，不匹配的话，正常通过。 类型：  基础ACL：只匹配源IP">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/27/路由策略/1.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/27/路由策略/1.png">
+<meta property="og:image" content="https://qiyuesanren.github.io/2020/11/27/路由策略/1.png">
+<meta property="og:updated_time" content="2020-11-27T13:15:25.475Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="路由策略">
+<meta name="twitter:description" content="路由策略路由器的规制  基于目的的，尽力而为的转发 对数据3层报头(网络层)中的目的IP，与自己的路由表做匹配  实验环境为：eNSP ACL(访问控制列表)功能：通过对3层，4层报头的指定字段进行匹配，实现数据包的管控 IP数据包五元组：  源IP地址 目的IP地址 协议号 源端口号 目的端口号  方式：如果数据匹配直接deny(干掉)，不匹配的话，正常通过。 类型：  基础ACL：只匹配源IP">
+<meta name="twitter:image" content="https://qiyuesanren.github.io/2020/11/27/路由策略/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="安柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">安柒</h5>
+          <a href="mailto:1823458075@qq.com" title="1823458075@qq.com" class="mail">1823458075@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">路由策略</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">路由策略</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-11-28T00:54:57.000Z" itemprop="datePublished" class="page-time">
+  2020-11-27
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#路由策略"><span class="post-toc-number">1.</span> <span class="post-toc-text">路由策略</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ACL-访问控制列表"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">ACL(访问控制列表)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#IP-Prefix前缀列表"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">IP-Prefix前缀列表</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Route-Policy-路由策略表"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Route-Policy(路由策略表)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#策略路由-策略转发"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">策略路由(策略转发)</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-路由策略"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">路由策略</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-11-27 16:54:57" datetime="2020-11-28T00:54:57.000Z"  itemprop="datePublished">2020-11-27</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/计算机网络/">计算机网络</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="路由策略"><a href="#路由策略" class="headerlink" title="路由策略"></a>路由策略</h1><p>路由器的规制</p>
+<ul>
+<li>基于目的的，尽力而为的转发</li>
+<li>对数据<code>3层报头</code>(网络层)中的<code>目的IP</code>，与自己的<code>路由表</code>做匹配</li>
+</ul>
+<p>实验环境为：eNSP</p>
+<h2 id="ACL-访问控制列表"><a href="#ACL-访问控制列表" class="headerlink" title="ACL(访问控制列表)"></a>ACL(访问控制列表)</h2><p>功能：通过对<code>3层，4层</code>报头的指定字段进行匹配，实现数据包的管控</p>
+<p>IP数据包五元组：</p>
+<ul>
+<li>源IP地址</li>
+<li>目的IP地址</li>
+<li>协议号</li>
+<li>源端口号</li>
+<li>目的端口号</li>
+</ul>
+<p>方式：如果数据匹配直接deny(干掉)，不匹配的话，正常通过。</p>
+<p>类型：</p>
+<ul>
+<li>基础ACL：只匹配<code>源IP地址</code></li>
+<li>增强ACL：对五元组进行检查</li>
+</ul>
+<p>ACL调用：设备接口的方向(是接收到的数据检查ACL，还是发送的数据检查ACL)</p>
+<p>规则：</p>
+<ul>
+<li>ACL的规则是<code>逐条匹配</code>，只要匹配上了，后面便不会看了，</li>
+<li>写入规则是按照条目由精确到模糊</li>
+<li>ACL 末尾隐含deny any(拒绝所有)，只要考虑使用ACL，那么该ACL至少包括一条permit(放行)语句</li>
+<li>ACL<strong>不检查自身发起的流量</strong></li>
+</ul>
+<img src="/2020/11/27/路由策略/1.png" title="This is an example image">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">R1 为RIP</span><br><span class="line">GE0/0/0为192.168.1.1/26</span><br><span class="line">RIP 的 network 192.168.1.0</span><br><span class="line">因为 </span><br><span class="line">A类IP段：0.0.0.0 到 127.255.255.255.</span><br><span class="line">A类 网段都是x.0.0.0</span><br><span class="line"></span><br><span class="line">B类IP段：128.0.0.0 到 191.255.255.255.</span><br><span class="line">B类 网段都是x.x.0.0</span><br><span class="line"></span><br><span class="line">C类IP段：192.0.0.0 到 223.255.255.255.</span><br><span class="line">C类 网段都是x.x.x.0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">R3 为OSPF</span><br><span class="line">loopback 0 为192.168.3.3/26</span><br><span class="line">OSPF 的通配符掩码为</span><br><span class="line">0.0.0.32-26=6=255-128-64=63</span><br></pre></td></tr></table></figure>
+
+<p>实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">基础ACL</span><br><span class="line">1.创建ACL表，声明该表是何种类型</span><br><span class="line">[R2]acl name haha basic </span><br><span class="line">[R2-acl-basic-haha] </span><br><span class="line">或者</span><br><span class="line">[R2]acl 2000</span><br><span class="line">[R2-acl-basic-2000]</span><br><span class="line">因为</span><br><span class="line">INTEGER&lt;2000-2999&gt;  Basic access-list(add to current using rules)</span><br><span class="line">INTEGER&lt;3000-3999&gt;  Advanced access-list(add to current using rules)</span><br><span class="line">INTEGER&lt;4000-4999&gt;  Specify a L2 acl group</span><br><span class="line">所以直接ACL 2000 也是可以滴</span><br><span class="line"></span><br><span class="line">2.根据策略写条目</span><br><span class="line">rule deny source 192.68.1.1 0.0.0.0(通配符掩码，如果通配符掩码指的是一个主机，那么通配符为全0)</span><br><span class="line"></span><br><span class="line">3.在接口的方向上进行注入ACL</span><br><span class="line">[R2]interface GigabitEthernet 0/0/0</span><br><span class="line">[R2-GigabitEthernet0/0/0]traffic-filter inbound acl 2000</span><br><span class="line">traffic-filter流量过滤</span><br><span class="line">inbound 进方向</span><br><span class="line">outbound  出方向</span><br><span class="line"></span><br><span class="line">观察命令display acl 2000</span><br><span class="line"></span><br><span class="line">取消ACL注入</span><br><span class="line">[R2-GigabitEthernet0/0/0]undo traffic-filter inbound</span><br><span class="line"></span><br><span class="line">删除ACL 2000</span><br><span class="line">[R2]display acl 2000</span><br><span class="line">Basic ACL 2000, 1 rule</span><br><span class="line">Acl&apos;s step is 5</span><br><span class="line"> rule 5 deny source 192.168.1.1 0 </span><br><span class="line">[R2]undo acl 2000</span><br><span class="line">[R2]display acl 2000</span><br><span class="line">[R2] 啥都没有了</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">扩展ACl</span><br><span class="line">[R2]acl 3000</span><br><span class="line">[R2-acl-adv-3000]rule deny ?</span><br><span class="line">  &lt;1-255&gt;  Protocol number</span><br><span class="line">  gre      GRE tunneling(47)</span><br><span class="line">  icmp     Internet Control Message Protocol(1)</span><br><span class="line">  igmp     Internet Group Management Protocol(2)</span><br><span class="line">  ip       Any IP protocol</span><br><span class="line">  ipinip   IP in IP tunneling(4)</span><br><span class="line">  ospf     OSPF routing protocol(89)</span><br><span class="line">  tcp      Transmission Control Protocol (6)</span><br><span class="line">  udp      User Datagram Protocol (17)</span><br><span class="line">单元组ACL</span><br><span class="line">[R2-acl-adv-3000]rule deny icmp source 192.168.1.1 0.0.0.0 destination 192.168.3.3 0.0.0.0</span><br><span class="line">多元组ACL</span><br><span class="line">[R2-acl-adv-3000]rule deny tcp source 192.168.1.1 0.0.0.0 source-port</span><br><span class="line"></span><br><span class="line">调用</span><br><span class="line">[R2]interface GigabitEthernet 0/0/0</span><br><span class="line">[R2-GigabitEthernet0/0/0]traffic-filter inbound acl 3000</span><br><span class="line"></span><br><span class="line">取消调用</span><br><span class="line">[R2]interface GigabitEthernet 0/0/0</span><br><span class="line">[R2-GigabitEthernet0/0/0]undo traffic-filter inbound </span><br><span class="line"></span><br><span class="line">删除ACL 3000</span><br><span class="line">[R2]display acl 3000</span><br><span class="line">Advanced ACL 3000, 1 rule</span><br><span class="line">Acl&apos;s step is 5</span><br><span class="line">rule 5 deny icmp source 192.168.1.1 0 destination 192.168.3.3 0 </span><br><span class="line">[R2]undo acl 3000</span><br><span class="line">[R2]display acl 3000</span><br><span class="line">[R2] 啥都没有了</span><br></pre></td></tr></table></figure>
+
+<h2 id="IP-Prefix前缀列表"><a href="#IP-Prefix前缀列表" class="headerlink" title="IP-Prefix前缀列表"></a>IP-Prefix前缀列表</h2><p>功能：对路由更新包中的更新<code>网段</code>字段进行匹配，实现管控，在协议中调用</p>
+<p>规则：</p>
+<ul>
+<li>ACL的规则是<code>逐条匹配</code>，只要匹配上了，后面便不会看了，</li>
+<li>写入规则是按照条目由精确到模糊</li>
+<li>ACL 末尾隐含deny any(拒绝所有)，只要考虑使用ACL，那么该ACL至少包括一条permit(放行)语句</li>
+<li>ACL<strong>不检查自身发起的流量</strong></li>
+</ul>
+<p>案例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ip ip-prefix haha(名字) premit 192.168.1.0 24</span><br><span class="line">	匹配：24位的IP(192.168.1）是一样的 且子网掩码为24位，则匹配</span><br><span class="line">ip ip-prefix haha(名字) premit 192.168.1.0 24 greter-euqal 25</span><br><span class="line">	匹配：24位的IP(192.168.1）是一样的 且子网掩码大于等于25位的，则匹配</span><br><span class="line">	例：192.168.1.128 /25(26,27,28,29,30,31) 可以通过</span><br><span class="line">ip ip-prefix haha(名字) premit 192.168.1.0 24 less-euqal 28</span><br><span class="line">	匹配：24位的IP(192.168.1）是一样的 且子网掩码小于等于28位的(28-24)，则匹配</span><br></pre></td></tr></table></figure>
+
+<p>上手：</p>
+<img src="/2020/11/27/路由策略/1.png" title="This is an example image">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">创建</span><br><span class="line">[R2]ip ip-prefix haha deny 192.168.1.0 26</span><br><span class="line"></span><br><span class="line">调用，因为 192.168.1.0 是RIp 所以得在RIP中调用</span><br><span class="line">[R2]rip	</span><br><span class="line">[R2-rip-1]version 2</span><br><span class="line">[R2-rip-1]filter-policy ip-prefix haha import</span><br><span class="line"></span><br><span class="line">删除调用</span><br><span class="line">[R2]rip	</span><br><span class="line">[R2-rip-1]version 2</span><br><span class="line">[R2-rip-1]undo filter-policy ip-prefix haha import </span><br><span class="line"></span><br><span class="line">删除ip-prefix</span><br><span class="line">[R2]undo ip ip-prefix haha</span><br></pre></td></tr></table></figure>
+
+<h2 id="Route-Policy-路由策略表"><a href="#Route-Policy-路由策略表" class="headerlink" title="Route-Policy(路由策略表)"></a>Route-Policy(路由策略表)</h2><p>功能：功能强大，数据包管控，更新包管控，数据内容管控，打标签(网络某个位置打标签，另外的位置否定)</p>
+<p>规则：</p>
+<ul>
+<li>ACL的规则是<code>逐条匹配</code>，只要匹配上了，后面便不会看了，</li>
+<li>写入规则是按照条目由精确到模糊</li>
+<li>ACL 末尾隐含deny any(拒绝所有)，只要考虑使用ACL，那么该ACL至少包括一条permit(放行)语句</li>
+<li>ACL<strong>不检查自身发起的流量</strong></li>
+</ul>
+<p>主条目：</p>
+<ul>
+<li><p>匹配子条目</p>
+</li>
+<li><p>执行子条目</p>
+</li>
+<li><p>案例：</p>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第三步 route-policy haha permit node 10</span><br><span class="line">//这是haha表的第10条主条目   如果子条目，执行子条目，则主条目通过  </span><br><span class="line">	第一步 if-match souce-ip 192.168.1.0 255.255.255.0   //如果没有匹配子条目，则匹配any</span><br><span class="line">	第二步 apply cost=100	//如果没有执行子条目，则按照主条目执行permit或者deny</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>上手</p>
+<img src="/2020/11/27/路由策略/1.png" title="This is an example image">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">[R2]acl 2000</span><br><span class="line">[R2-acl-basic-2000]rule  permit source 192.168.1.0 0.0.0.63 // permit(感兴趣)</span><br><span class="line"></span><br><span class="line">[R2]route-policy haha permit node 10</span><br><span class="line">route-policy haha permit node 10</span><br><span class="line">Info: New Sequence of this List.</span><br><span class="line">[R2-route-policy]if	</span><br><span class="line">[R2-route-policy]if-match acl 2000</span><br><span class="line"></span><br><span class="line">[R2-route-policy]apply ?</span><br><span class="line">  as-path           BGP AS path list</span><br><span class="line">  backup-interface  Backup outgoing interface</span><br><span class="line">  backup-nexthop    Backup nexthop address</span><br><span class="line">  behavior          Specify QoS policy as behavior</span><br><span class="line">  comm-filter       Set BGP community filter (for deletion)</span><br><span class="line">  community         BGP community attribute</span><br><span class="line">  cost              Set metric of route</span><br><span class="line">  cost-type         Type of metric for destination routing protocol</span><br><span class="line">  dampening         Set BGP route flap dampening parameters</span><br><span class="line">  extcommunity      Set BGP/VPN extended community filter</span><br><span class="line">  ip-address        IP information</span><br><span class="line">  ip-precedence     Specify QoS policy as IP precedence</span><br><span class="line">  ipv6              IPv6 Information</span><br><span class="line">  isis              Where to import route</span><br><span class="line">  local-preference  BGP local preference path attribute</span><br><span class="line">  mpls-label        Give the Label</span><br><span class="line">  origin            BGP origin code</span><br><span class="line">  ospf              Where to import route</span><br><span class="line">  preference        Give the Preference  (Route Preference)</span><br><span class="line">  preferred-value   BGP Preferred-value (weight) for routing table</span><br><span class="line">  qos-local-id      Specify QoS policy as qos local id</span><br><span class="line">  tag               Set tag of route</span><br><span class="line">  traffic-index     Specify BGP Traffic Accounting Index</span><br><span class="line"></span><br><span class="line">[R2-route-policy]apply cost 100</span><br><span class="line">	</span><br><span class="line">[R2-route-policy]display this</span><br><span class="line">[V200R003C00]</span><br><span class="line">#</span><br><span class="line">route-policy haha permit node 10 </span><br><span class="line"> if-match acl 2000 </span><br><span class="line"> apply cost 100 </span><br><span class="line">#</span><br><span class="line">return</span><br><span class="line">[R2-route-policy]</span><br><span class="line"></span><br><span class="line">注入</span><br><span class="line">[R2]ospf	</span><br><span class="line">[R2-ospf-1]undo import-route rip </span><br><span class="line">[R2-ospf-1]import-route rip route-policy haha</span><br></pre></td></tr></table></figure>
+
+<h2 id="策略路由-策略转发"><a href="#策略路由-策略转发" class="headerlink" title="策略路由(策略转发)"></a>策略路由(策略转发)</h2><p>整个路由转发路径的路由不是静态的或者动态构建，而是通过策略构建的</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2020-11-27T13:15:25.475Z" itemprop="dateUpdated">2020-11-27 05:15:25</time>
+</span><br>
+
+
+        
+        这里可以写作者留言，标签和 hexo 中所有变量及辅助函数等均可调用，示例：<a href="/2020/11/27/路由策略/" target="_blank" rel="external">https://qiyuesanren.github.io/2020/11/27/路由策略/</a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://qiyuesanren.github.io">
+            <img src="/img/avatar.jpg" alt="安柒">
+            安柒
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/路由策略/">路由策略</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/27/路由策略/&title=《路由策略》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/27/路由策略/&title=《路由策略》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/27/路由策略/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《路由策略》 — 安柒&url=https://qiyuesanren.github.io/2020/11/27/路由策略/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/27/路由策略/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/11/26/Clion运行多个Main 函数/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Clion运行多个Main函数</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>安柒 &copy; 2020</span>
+            <span>
+                
+                <a href="http://beian.miit.gov.cn/" target="_blank">陕ICP备19022751号-3</a><br>
+                
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://qiyuesanren.github.io/2020/11/27/路由策略/&title=《路由策略》 — 安柒&pic=https://qiyuesanren.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://qiyuesanren.github.io/2020/11/27/路由策略/&title=《路由策略》 — 安柒&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://qiyuesanren.github.io/2020/11/27/路由策略/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《路由策略》 — 安柒&url=https://qiyuesanren.github.io/2020/11/27/路由策略/&via=https://qiyuesanren.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://qiyuesanren.github.io/2020/11/27/路由策略/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLklEQVR42u3awW4jIRAEUP//TzvS3lbJTKqaxIrhcbJk5OHNAdNdPB7xeP4bnz9ffft55E/J59cDAwPjbRnP23G19KsH3y8lWWjyUr74BQwMjAMY+c/lc5LXcT8nWRsGBgbG/Zx2fkvFwMDAWNlw820036wxMDAw7hlJEXu/oGHx+fpaHAMD4w0ZK8HAb39+Ub6BgYHxhxnPciStt3xrvmcUq8LAwNiakVyeaJv4s5ByJVrAwMA4h9GWjrOocj0oLe6UYWBgbMGYXd767WI12ay/ORRiYGBsxJhFlT8VT7ZLL064GBgYGzHydnxSrLZx43pc+l/XEAMDY2tG/pi8lZZfyMgL6cvdFQMD4wBGGwC0Lfv1Y2KUxGJgYBzASBbaHu/aa15tMYyBgXECYxYJrBwTc9JKdIGBgXEOo257lU269iiZ/w1gYGDsxJg15duD4ywGKJ6OgYFxDGO2abYHyrYxF71iDAyMYxhtKTtrirWkaCUYGBhbM1ZKzZbXXsuoj6QYGBibMtrlrjTgZlHoMAbAwMDYjtEWqO0j8wsZ99v98B8DAwPjzRn5Fa48VmwX+ijH5UowMDA2ZTzL0V4Rm0UFbYyKgYGxN2O2zeWRwGtiBgwMjBMYeQGZb50/9Zs5HgMD4wRG229vD4stpu6nYWBgYJTF5CySzF8BBgYGRlugtgfN2cxvXgQGBsYBjPaiwyyMzIPMvGzGwMA4gbFSQBbXtuKMYtbmw8DA2JTxAS0fiYekMq9rAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '安柒！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
